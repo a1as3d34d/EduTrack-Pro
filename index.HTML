@@ -1,0 +1,2578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="google-signin-client_id" content="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" Contact="619913320-1mpftubob6cd7dob6ostj7c2udibidn1.apps.googleusercontent.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EduTrack Pro - A comprehensive student management system for tracking student information, grades, and more.">
+    <meta name="keywords" content="student management, education, grades, tracking, EduTrack Pro">
+    <meta name="author" content="Lacle Julian Ajata Lauren">
+    <title>🎓 EduTrack Pro - Student Management</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="css" type="image/png" href="logo.png">
+    <link rel="stylesheet" type="text/css" href="stly.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+</head>
+<body>
+    <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <i class="fas fa-moon" aria-hidden="true"></i> <span class="theme-label">Dark Mode</span>
+    </button>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-graduation-cap" aria-hidden="true"></i> EduTrack Pro</h1>
+        </header>
+        <main>
+            <section id="authContainer" class="auth-container" aria-labelledby="authHeading">
+                <h1 id="authHeading">🎓 EduTrack Pro</h1>
+                <div class="signin-card">
+                    <h2>School Administrator Login</h2>
+                    <div class="g-signin2" data-onsuccess="onSignIn" aria-label="Google Sign-In"></div>
+                    <p class="disclaimer">Your data will be securely stored in your Google Drive.</p>
+                </div>
+            </section>
+            
+            <section id="appContainer" class="container" style="display:none;" aria-hidden="true">
+                <button onclick="signOut()" class="signout-btn" aria-label="Sign Out">
+                    <i class="fas fa-sign-out-alt" aria-hidden="true"></i> Sign Out
+                </button>
+                <!-- Additional content goes here -->
+            </section>
+        </main>
+    </div>
+</body>
+            
+            <!-- Tabs Navigation -->
+            <div class="tab-container">
+                <div class="tab active" onclick="showTab('dashboard')" aria-label="Dashboard">
+                    <i class="fas fa-tachometer-alt" aria-hidden="true"></i> <span>Dashboard</span>
+                </div>
+                <div class="tab" onclick="showTab('add')" aria-label="Add Student">
+                    <i class="fas fa-user-plus" aria-hidden="true"></i> <span>Add Student</span>
+                </div>
+                <div class="tab" onclick="showTab('search')" aria-label="Search">
+                    <i class="fas fa-search" aria-hidden="true"></i> <span>Search</span>
+                </div>
+                <div class="tab" onclick="showTab('view')" aria-label="View All Students">
+                    <i class="fas fa-users" aria-hidden="true"></i> <span>View All</span>
+                </div>
+                <div class="tab" onclick="showTab('attendance')" aria-label="Attendance">
+                    <i class="fas fa-calendar-check" aria-hidden="true"></i> <span>Attendance</span>
+                </div>
+                <div class="tab" onclick="showTab('analytics')" aria-label="Analytics">
+                    <i class="fas fa-chart-bar" aria-hidden="true"></i> <span>Analytics</span>
+                </div>
+                <div class="tab" onclick="showTab('backup')" aria-label="Backup">
+                    <i class="fas fa-database" aria-hidden="true"></i> <span>Backup</span>
+                </div>
+                <div class="tab" onclick="showTab('calculator')" aria-label="Calculator">
+                    <i class="fas fa-calculator" aria-hidden="true"></i> <span>Calculator</span>
+                </div>
+                <div class="tab" onclick="showTab('help')" aria-label="Help">
+                    <i class="fas fa-question-circle" aria-hidden="true"></i> <span>Help</span>
+                </div>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <h2><i class="fas fa-tachometer-alt"></i> Dashboard Overview</h2>
+                
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <h3>Total Students</h3>
+                        <div class="stat-value" id="totalStudents">0</div>
+                        <div class="stat-change positive" id="studentChange">+0% from last month</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Attendance Rate</h3>
+                        <div class="stat-value" id="attendanceRate">0%</div>
+                        <div class="stat-change positive" id="attendanceChange">+0% from last week</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Average GPA</h3>
+                        <div class="stat-value" id="averageGpa">0.0</div>
+                        <div class="stat-change positive" id="gpaChange">+0.0 from last term</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Top Program</h3>
+                        <div class="stat-value" id="topProgram">-</div>
+                        <div class="stat-change" id="programStats">0 students</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>New Registrations</h3>
+                        <div class="stat-value" id="newRegistrations">0</div>
+                        <div class="stat-change positive" id="registrationChange">+0% from last week</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="dashboardChart"></canvas>
+                </div>
+
+                <div class="recent-activity">
+                    <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                    <div id="activityLog" class="card">
+                        <!-- Activity items will be added here -->
+                    </div>
+                </div>
+
+                <div class="quick-links">
+                    <h3><i class="fas fa-link"></i> Quick Links</h3>
+                    <div class="quick-links-container">
+                        <a href="#add" class="quick-link">
+                            <i class="fas fa-user-plus"></i> Add Student
+                        </a>
+                        <a href="#attendance" class="quick-link">
+                            <i class="fas fa-calendar-check"></i> Mark Attendance
+                        </a>
+                        <a href="#analytics" class="quick-link">
+                            <i class="fas fa-chart-bar"></i> View Analytics
+                        </a>
+                        <a href="#backup" class="quick-link">
+                            <i class="fas fa-database"></i> Backup Data
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Tab -->
+            <div id="add" class="tab-content section">
+                <h2><i class="fas fa-user-plus"></i> New Student Registration</h2>
+                <div class="card">
+                    <div class="input-group">
+                        <label for="name"><i class="fas fa-user"></i> Full Name</label>
+                        <input type="text" id="name" placeholder="Full Name" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="age"><i class="fas fa-birthday-cake"></i> Age</label>
+                        <input type="number" id="age" placeholder="Age" min="5" max="30" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="email" placeholder="student@example.com">
+                    </div>
+                    <div class="input-group">
+                        <label for="phone"><i class="fas fa-phone"></i> Phone</label>
+                        <input type="tel" id="phone" placeholder="Phone number">
+                    </div>
+                    <div class="input-group">
+                        <label for="class"><i class="fas fa-graduation-cap"></i> Program</label>
+                        <select id="class" onchange="populateSubjects()" required>
+                            <option value="">Select Program</option>
+                            <option value="Science">Science</option>
+                            <option value="Accounting">Accounting</option>
+                            <option value="Art">Art</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="photo"><i class="fas fa-camera"></i> Student Photo</label>
+                        <input type="file" id="photo" accept="image/*">
+                    </div>
+                    <div id="subjectsContainer" class="subject-grid"></div>
+                    <button id="saveStudentBtn" onclick="addStudent()"><i class="fas fa-save"></i> Register Student</button>
+                </div>
+            </div>
+
+            <!-- Search Tab -->
+            <div id="search" class="tab-content section">
+                <h2><i class="fas fa-search"></i> Student Lookup</h2>
+                <div class="card">
+                    <div class="input-group">
+                        <label for="searchName"><i class="fas fa-user"></i> Student Name</label>
+                        <input type="text" id="searchName" placeholder="Enter student name">
+                    </div>
+                    <div class="input-group">
+                        <label for="searchClass"><i class="fas fa-graduation-cap"></i> Filter by Program</label>
+                        <select id="searchClass">
+                            <option value="">All Programs</option>
+                            <option value="Science">Science</option>
+                            <option value="Accounting">Accounting</option>
+                            <option value="Art">Art</option>
+                        </select>
+                    </div>
+                    <button onclick="searchStudent()"><i class="fas fa-search"></i> Search</button>
+                    <button onclick="advancedSearch()" class="secondary"><i class="fas fa-filter"></i> Advanced Search</button>
+                    <div id="searchResult"></div>
+                </div>
+            </div>
+
+            <!-- View All Tab -->
+            <div id="view" class="tab-content section">
+                <h2><i class="fas fa-users"></i> Student Directory</h2>
+                <div class="card">
+                    <div class="input-group">
+                        <label for="groupFilter"><i class="fas fa-filter"></i> Filter by Program</label>
+                        <select id="groupFilter" onchange="filterByGroup()">
+                            <option value="">All Programs</option>
+                            <option value="Science">Science</option>
+                            <option value="Accounting">Accounting</option>
+                            <option value="Art">Art</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="sortBy"><i class="fas fa-sort"></i> Sort By</label>
+                        <select id="sortBy" onchange="sortStudents()">
+                            <option value="name-asc">Name (A-Z)</option>
+                            <option value="name-desc">Name (Z-A)</option>
+                            <option value="age-asc">Age (Low-High)</option>
+                            <option value="age-desc">Age (High-Low)</option>
+                            <option value="class-asc">Program (A-Z)</option>
+                            <option value="class-desc">Program (Z-A)</option>
+                        </select>
+                    </div>
+                    <div id="allStudents"></div>
+                </div>
+            </div>
+
+            <!-- Attendance Tab -->
+            <div id="attendance" class="tab-content section">
+                <h2><i class="fas fa-calendar-check"></i> Attendance Tracking</h2>
+                <div class="card">
+                    <div class="input-group">
+                        <label for="attendanceDate"><i class="fas fa-calendar-day"></i> Date</label>
+                        <input type="date" id="attendanceDate" onchange="loadAttendance()">
+                    </div>
+                    <div class="input-group">
+                        <label for="attendanceClass"><i class="fas fa-graduation-cap"></i> Filter by Program</label>
+                        <select id="attendanceClass" onchange="loadAttendance()">
+                            <option value="">All Programs</option>
+                            <option value="Science">Science</option>
+                            <option value="Accounting">Accounting</option>
+                            <option value="Art">Art</option>
+                        </select>
+                    </div>
+                    <div id="attendanceStats" class="stat-card" style="margin-bottom: 20px;">
+                        <h3>Attendance Summary</h3>
+                        <div class="stat-value" id="attendancePercentage">0%</div>
+                        <div id="attendanceCounts">Present: 0 / Absent: 0 / Total: 0</div>
+                    </div>
+                    <div id="attendanceList"></div>
+                    <button id="saveAttendanceBtn" onclick="saveAttendance()"><i class="fas fa-save"></i> Save Attendance</button>
+                    <button onclick="printAttendance()" class="secondary"><i class="fas fa-print"></i> Print Report</button>
+                </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div id="analytics" class="tab-content section">
+                <h2><i class="fas fa-chart-bar"></i> Performance Analytics</h2>
+                <div class="card">
+                    <div class="input-group">
+                        <label for="analyticsClass"><i class="fas fa-graduation-cap"></i> Filter by Program</label>
+                        <select id="analyticsClass" onchange="updatePerformanceChart()">
+                            <option value="">All Programs</option>
+                            <option value="Science">Science</option>
+                            <option value="Accounting">Accounting</option>
+                            <option value="Art">Art</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="analyticsSubject"><i class="fas fa-book"></i> Filter by Subject</label>
+                        <select id="analyticsSubject" onchange="updatePerformanceChart()">
+                            <option value="">All Subjects</option>
+                        </select>
+                    </div>
+                    <canvas id="performanceChart"></canvas>
+                    <div class="stats-container" style="margin-top: 20px;">
+                        <div class="stat-card">
+                            <h3>Top Student</h3>
+                            <div class="stat-value" id="topStudent">-</div>
+                            <div class="stat-change" id="topStudentGpa">GPA: 0.0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Most Improved</h3>
+                            <div class="stat-value" id="mostImproved">-</div>
+                            <div class="stat-change positive" id="improvementRate">+0%</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Subject Performance</h3>
+                            <div class="stat-value" id="bestSubject">-</div>
+                            <div class="stat-change" id="subjectAvg">Avg: 0.0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Program Comparison</h3>
+                            <div class="stat-value" id="bestProgram">-</div>
+                            <div class="stat-change" id="programAvg">Avg: 0.0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Backup Tab -->
+            <div id="backup" class="tab-content section">
+                <h2><i class="fas fa-database"></i> Data Management</h2>
+                <div class="card">
+                    <div class="input-group">
+                        <h3><i class="fas fa-download"></i> Backup Data</h3>
+                        <p>Create a backup of all student records, attendance, and settings.</p>
+                        <button onclick="backupData()"><i class="fas fa-file-export"></i> Download Backup</button>
+                        <button onclick="emailBackup()" class="secondary"><i class="fas fa-envelope"></i> Email Backup</button>
+                    </div>
+                    
+                    <div class="input-group">
+                        <h3><i class="fas fa-upload"></i> Restore Data</h3>
+                        <p>Restore from a previously saved backup file.</p>
+                        <div id="dropArea">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drag & Drop to Restore Backup</p>
+                            <p>or</p>
+                            <button onclick="document.getElementById('restoreFile').click()" class="secondary">
+                              <i class="fas fa-folder-open"></i> Select File
+                            </button>
+                            <input type="file" id="restoreFile" accept=".json" hidden>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <h3><i class="fas fa-trash-alt"></i> Data Management</h3>
+                        <p>Warning: These actions cannot be undone.</p>
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="clearAttendance()" class="danger"><i class="fas fa-calendar-times"></i> Clear Attendance</button>
+                            <button onclick="clearAllData()" class="danger"><i class="fas fa-trash"></i> Clear All Data</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calculator Tab -->
+            <div id="calculator" class="tab-content section">
+                <h2><i class="fas fa-calculator"></i> Grade Calculator</h2>
+                <div class="card">
+                    <div class="calculator-container">
+                        <div class="calculator">
+                            <div class="display" id="display">0</div>
+                            <div class="buttons">
+                                <button onclick="clearAll()" class="clear"><i class="fas fa-backspace"></i> AC</button>
+                                <button onclick="clearEntry()" class="clear-entry">CE</button>
+                                <button onclick="appendToDisplay('%')">%</button>
+                                <button onclick="appendOperator('/')" class="operator">÷</button>
+                                
+                                <button onclick="appendToDisplay('7')">7</button>
+                                <button onclick="appendToDisplay('8')">8</button>
+                                <button onclick="appendToDisplay('9')">9</button>
+                                <button onclick="appendOperator('*')" class="operator">×</button>
+                                
+                                <button onclick="appendToDisplay('4')">4</button>
+                                <button onclick="appendToDisplay('5')">5</button>
+                                <button onclick="appendToDisplay('6')">6</button>
+                                <button onclick="appendOperator('-')" class="operator">-</button>
+                                
+                                <button onclick="appendToDisplay('1')">1</button>
+                                <button onclick="appendToDisplay('2')">2</button>
+                                <button onclick="appendToDisplay('3')">3</button>
+                                <button onclick="appendOperator('+')" class="operator">+</button>
+                                
+                                <button onclick="appendToDisplay('0')" class="zero">0</button>
+                                <button onclick="appendToDisplay('.')">.</button>
+                                <button onclick="calculate()" class="equals">=</button>
+                            </div>
+                        </div>
+                        <div class="advanced-calculator">
+                            <h3>Advanced Features</h3>
+                            <div class="advanced-buttons">
+                                <button onclick="appendToDisplay('(')">(</button>
+                                <button onclick="appendToDisplay(')')">)</button>
+                                <button onclick="appendToDisplay('Math.sqrt(')">√</button>
+                                <button onclick="appendToDisplay('Math.pow(')">x<sup>y</sup></button>
+                                <button onclick="appendToDisplay('Math.sin(')">sin</button>
+                                <button onclick="appendToDisplay('Math.cos(')">cos</button>
+                                <button onclick="appendToDisplay('Math.tan(')">tan</button>
+                                <button onclick="appendToDisplay('Math.log(')">log</button>
+                                <button onclick="appendToDisplay('Math.exp(')">e<sup>x</sup></button>
+                                <button onclick="appendToDisplay('Math.PI')">π</button>
+                                <button onclick="appendToDisplay('Math.E')">e</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        
+                        <div class="calculator-features">
+                            <div class="grade-converter">
+                                <h3><i class="fas fa-exchange-alt"></i> Grade Converter</h3>
+                                <div class="input-group">
+                                    <label for="scoreInput">Score (0-100)</label>
+                                    <input type="number" id="scoreInput" min="0" max="100" placeholder="Enter score">
+                                </div>
+                                <button onclick="convertToGrade()"><i class="fas fa-calculator"></i> Convert to Grade</button>
+                                <div id="gradeResult" class="result-box"></div>
+                            </div>
+                            
+                            <div class="gpa-calculator">
+                                <h3><i class="fas fa-calculator"></i> GPA Calculator</h3>
+                                <div id="gpaSubjects">
+                                    <!-- Subjects will be added here -->
+                                </div>
+                                <button onclick="addGpaSubject()"><i class="fas fa-plus"></i> Add Subject</button>
+                                <button onclick="calculateGPA()"><i class="fas fa-calculator"></i> Calculate GPA</button>
+                                <div id="gpaResult" class="result-box"></div>
+                            </div>
+                            <div class="weighted-gpa-calculator">
+                                <h3><i class="fas fa-balance-scale"></i> Weighted GPA Calculator</h3>
+                                <div id="weightedGpaSubjects">
+                                    <!-- Weighted subjects will be added here -->
+                                </div>
+                                <button onclick="addWeightedGpaSubject()"><i class="fas fa-plus"></i> Add Weighted Subject</button>
+                                <button onclick="calculateWeightedGPA()"><i class="fas fa-calculator"></i> Calculate Weighted GPA</button>
+                                <div id="weightedGpaResult" class="result-box"></div>
+                            </div>
+                            <script>
+                                function addWeightedGpaSubject() {
+                                    const container = document.getElementById('weightedGpaSubjects');
+                                    const subjectId = Date.now(); // Unique ID
+
+                                    const subjectDiv = document.createElement('div');
+                                    subjectDiv.className = 'weighted-gpa-subject';
+                                    subjectDiv.innerHTML = `
+                                        <div class="input-group">
+                                            <input type="text" placeholder="Subject" id="weighted-subject-${subjectId}">
+                                        </div>
+                                        <div class="input-group">
+                                            <select id="weighted-grade-${subjectId}">
+                                                <option value="4.0">A (4.0)</option>
+                                                <option value="3.7">A- (3.7)</option>
+                                                <option value="3.3">B+ (3.3)</option>
+                                                <option value="3.0">B (3.0)</option>
+                                                <option value="2.7">B- (2.7)</option>
+                                                <option value="2.3">C+ (2.3)</option>
+                                                <option value="2.0">C (2.0)</option>
+                                                <option value="1.7">C- (1.7)</option>
+                                                <option value="1.3">D+ (1.3)</option>
+                                                <option value="1.0">D (1.0)</option>
+                                                <option value="0.0">F (0.0)</option>
+                                            </select>
+                                        </div>
+                                        <div class="input-group">
+                                            <input type="number" min="1" max="10" value="1" id="weighted-credits-${subjectId}" placeholder="Credits">
+                                        </div>
+                                        <div class="input-group">
+                                            <input type="number" min="1" max="5" value="1" id="weighted-factor-${subjectId}" placeholder="Weight Factor">
+                                        </div>
+                                        <button onclick="this.parentElement.remove()" class="remove-subject"><i class="fas fa-times"></i></button>
+                                    `;
+
+                                    container.appendChild(subjectDiv);
+                                }
+
+                                function calculateWeightedGPA() {
+                                    const subjects = document.querySelectorAll('.weighted-gpa-subject');
+                                    if (subjects.length === 0) {
+                                        showNotification('Please add at least one subject!', 'error');
+                                        return;
+                                    }
+
+                                    let totalWeightedPoints = 0;
+                                    let totalWeightedCredits = 0;
+                                    let results = [];
+
+                                    subjects.forEach(subject => {
+                                        const gradeSelect = subject.querySelector('select');
+                                        const creditsInput = subject.querySelector('input[id^="weighted-credits"]');
+                                        const factorInput = subject.querySelector('input[id^="weighted-factor"]');
+                                        const subjectInput = subject.querySelector('input[id^="weighted-subject"]');
+
+                                        const grade = parseFloat(gradeSelect.value);
+                                        const credits = parseFloat(creditsInput.value) || 1;
+                                        const factor = parseFloat(factorInput.value) || 1;
+                                        const weightedPoints = grade * credits * factor;
+
+                                        totalWeightedPoints += weightedPoints;
+                                        totalWeightedCredits += credits * factor;
+
+                                        results.push({
+                                            subject: subjectInput.value || 'Unnamed Subject',
+                                            grade: gradeSelect.options[gradeSelect.selectedIndex].text,
+                                            credits: credits,
+                                            factor: factor,
+                                            points: weightedPoints.toFixed(2)
+                                        });
+                                    });
+
+                                    const weightedGpa = totalWeightedPoints / totalWeightedCredits;
+
+                                    let resultHTML = `<p><strong>Weighted GPA:</strong> ${weightedGpa.toFixed(2)}</p>`;
+                                    resultHTML += `<p><strong>Total Weighted Credits:</strong> ${totalWeightedCredits}</p>`;
+                                    resultHTML += `<div class="gpa-details"><h4>Details:</h4><ul>`;
+                                    resultHTML += results.map(sub => `
+                                        <li>${sub.subject}: ${sub.grade} (${sub.credits} cr, Weight: ${sub.factor}) = ${sub.points}</li>
+                                    `).join('');
+                                    resultHTML += `</ul></div>`;
+
+                                    document.getElementById('weightedGpaResult').innerHTML = resultHTML;
+                                }
+                            </script>
+                    
+                    <div class="history">
+                        <h3><i class="fas fa-history"></i> Calculation History</h3>
+                        <div id="history"></div>
+                        <button onclick="clearHistory()" class="clear-history danger"><i class="fas fa-trash"></i> Clear History</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Help Tab -->
+            <div id="help" class="tab-content section">
+                <h2><i class="fas fa-question-circle"></i> EduTrack Pro Help Center</h2>
+                
+                <div class="card">
+                    <div class="help-search">
+                        <input type="text" id="helpSearch" placeholder="Search help topics...">
+                        <button onclick="searchHelp()"><i class="fas fa-search"></i> Search</button>
+                    </div>
+                    
+                    <div class="help-sections">
+                        <!-- Getting Started -->
+                        <div class="help-section">
+                            <h3 class="help-section-title" onclick="toggleHelpSection(this)">
+                                <i class="fas fa-play-circle"></i> Getting Started
+                                <i class="fas fa-chevron-down"></i>
+                            </h3>
+                            <div class="help-section-content">
+                                <div class="help-topic">
+                                    <h4>First Time Setup</h4>
+                                    <p>Welcome to EduTrack Pro! To get started:</p>
+                                    <ol>
+                                        <li>Sign in with your Google account (top right corner)</li>
+                                        <li>Navigate to the "Add Student" tab to register your first student</li>
+                                        <li>Select the appropriate program for the student</li>
+                                        <li>Add subjects and grades as needed</li>
+                                    </ol>
+                                </div>
+                                
+                                <div class="help-topic">
+                                    <h4>Understanding the Dashboard</h4>
+                                    <p>The dashboard provides an overview of your institution's data:</p>
+                                    <ul>
+                                        <li><strong>Total Students:</strong> Current number of registered students</li>
+                                        <li><strong>Attendance Rate:</strong> Percentage of students present today</li>
+                                        <li><strong>Average GPA:</strong> Overall academic performance</li>
+                                        <li><strong>Top Program:</strong> Program with most enrolled students</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Student Management -->
+                        <div class="help-section">
+                            <h3 class="help-section-title" onclick="toggleHelpSection(this)">
+                                <i class="fas fa-users"></i> Student Management
+                                <i class="fas fa-chevron-down"></i>
+                            </h3>
+                            <div class="help-section-content">
+                                <div class="help-topic">
+                                    <h4>Adding a New Student</h4>
+                                    <ol>
+                                        <li>Go to the "Add Student" tab</li>
+                                        <li>Fill in the student's personal information</li>
+                                        <li>Select their program (Science, Accounting, or Art)</li>
+                                        <li>Check the boxes for subjects they're enrolled in</li>
+                                        <li>Click "Register Student" to save</li>
+                                    </ol>
+                                    <p><strong>Tip:</strong> You can add grades when registering or edit them later.</p>
+                                </div>
+                                
+                                <div class="help-topic">
+                                    <h4>Editing Student Information</h4>
+                                    <p>To edit an existing student:</p>
+                                    <ol>
+                                        <li>Find the student using the "Search" or "View All" tabs</li>
+                                        <li>Click the "Edit" button on their card</li>
+                                        <li>Make your changes in the form</li>
+                                        <li>Click "Save Changes" to update</li>
+                                    </ol>
+                                </div>
+                                
+                                <div class="help-topic">
+                                    <h4>Managing Student Grades</h4>
+                                    <p>To add or edit grades:</p>
+                                    <ol>
+                                        <li>Edit the student's record</li>
+                                        <li>Click "Add Grade" next to any subject</li>
+                                        <li>Select the appropriate grade (A-F)</li>
+                                        <li>Optionally add a score (0-100) and teacher notes</li>
+                                        <li>Click "Save Grade & Notes"</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Attendance Tracking -->
+                        <div class="help-section">
+                            <h3 class="help-section-title" onclick="toggleHelpSection(this)">
+                                <i class="fas fa-calendar-check"></i> Attendance Tracking
+                                <i class="fas fa-chevron-down"></i>
+                            </h3>
+                            <div class="help-section-content">
+                                <div class="help-topic">
+                                    <h4>Recording Daily Attendance</h4>
+                                    <ol>
+                                        <li>Go to the "Attendance" tab</li>
+                                        <li>Select the date (defaults to today)</li>
+                                        <li>Filter by program if needed</li>
+                                        <li>Toggle the switches to mark students present/absent</li>
+                                        <li>Click "Save Attendance" when finished</li>
+                                    </ol>
+                                </div>
+                                
+                                <div class="help-topic">
+                                    <h4>Viewing Attendance Reports</h4>
+                                    <p>The attendance tab shows:</p>
+                                    <ul>
+                                        <li>Overall attendance percentage</li>
+                                        <li>Counts of present/absent students</li>
+                                        <li>Individual student attendance status</li>
+                                    </ul>
+                                    <p>Click "Print Report" to generate a printable version.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Data Management -->
+                        <div class="help-section">
+                            <h3 class="help-section-title" onclick="toggleHelpSection(this)">
+                                <i class="fas fa-database"></i> Data Management
+                                <i class="fas fa-chevron-down"></i>
+                            </h3>
+                            <div class="help-section-content">
+                                <div class="help-topic">
+                                    <h4>Backing Up Your Data</h4>
+                                    <p>To create a backup:</p>
+                                    <ol>
+                                        <li>Go to the "Backup" tab</li>
+                                        <li>Click "Download Backup" to save a file to your computer</li>
+                                        <li>Optionally click "Email Backup" to send it to your email</li>
+                                    </ol>
+                                    <p><strong>Important:</strong> Regular backups prevent data loss!</p>
+                                </div>
+                                
+                                <div class="help-topic">
+                                    <h4>Restoring From Backup</h4>
+                                    <ol>
+                                        <li>Go to the "Backup" tab</li>
+                                        <li>Drag and drop your backup file into the restore area</li>
+                                        <li>OR click "Select File" to browse for your backup</li>
+                                        <li>Confirm the restore when prompted</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- FAQs -->
+                        <div class="help-section">
+                            <h3 class="help-section-title" onclick="toggleHelpSection(this)">
+                                <i class="fas fa-question"></i> Frequently Asked Questions
+                                <i class="fas fa-chevron-down"></i>
+                            </h3>
+                            <div class="help-section-content">
+                                <div class="help-topic">
+                                    <h4>Where is my data stored?</h4>
+                                    <p>All data is stored securely in your browser's local storage and optionally in your Google Drive when you sign in with Google.</p>
+                                </div>
+                                
+                                <div class="help-topic">
+                                    <h4>Can I use this on multiple devices?</h4>
+                                    <p>Yes! Sign in with the same Google account on each device and use the backup/restore feature to sync your data.</p>
+                                </div>
+                                
+                                <div class="help-topic">
+                                    <h4>How do I reset my data?</h4>
+                                    <p>Go to the "Backup" tab and click "Clear All Data". Warning: This cannot be undone!</p>
+                                </div>
+                                
+                                <div class="help-topic">
+                                    <h4>Can I add custom subjects?</h4>
+                                    <p>Currently, subjects are predefined by program. Contact support if you need additional subjects.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced Search Modal -->
+            <div id="advancedSearchModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal('advancedSearchModal')">&times;</span>
+                    <h3><i class="fas fa-search-plus"></i> Advanced Search</h3>
+                    <div class="input-group">
+                        <label for="advName">Name Contains</label>
+                        <input type="text" id="advName" placeholder="Partial name match">
+                    </div>
+                    <div class="input-group">
+                        <label for="advClass">Program</label>
+                        <select id="advClass">
+                            <option value="">Any Program</option>
+                            <option value="Science">Science</option>
+                            <option value="Accounting">Accounting</option>
+                            <option value="Art">Art</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="advAgeMin">Age Range</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="advAgeMin" placeholder="Min" min="5" max="30" style="flex: 1;">
+                            <input type="number" id="advAgeMax" placeholder="Max" min="5" max="30" style="flex: 1;">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="advSubject">Subject</label>
+                        <select id="advSubject">
+                            <option value="">Any Subject</option>
+                            <!-- Subjects will be populated dynamically -->
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="advGrade">Minimum Grade</label>
+                        <select id="advGrade">
+                            <option value="">Any Grade</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                            <option value="F">F</option>
+                        </select>
+                    </div>
+                    <button onclick="performAdvancedSearch()"><i class="fas fa-search"></i> Search</button>
+                </div>
+            </div>
+
+            <!-- Student Details Modal -->
+            <div id="studentModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal('studentModal')">&times;</span>
+                    <div id="studentModalContent">
+                        <!-- Content will be loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grade Input Modal -->
+            <div id="gradeModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal('gradeModal')">&times;</span>
+                    <h3><i class="fas fa-graduation-cap"></i> Enter Grade for <span id="modalSubjectName"></span></h3>
+                    <div class="input-group">
+                        <label for="gradeInput">Grade</label>
+                        <select id="gradeInput">
+                            <option value="">Select Grade</option>
+                            <option value="A">A (90-100%)</option>
+                            <option value="B">B (80-89%)</option>
+                            <option value="C">C (70-79%)</option>
+                            <option value="D">D (60-69%)</option>
+                            <option value="E">E (50-59%)</option>
+                            <option value="F">F (Below 50%)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="scoreInput">Score (Optional)</label>
+                        <input type="number" id="scoreInput" min="0" max="100" placeholder="Enter score (0-100)">
+                    </div>
+                    <div class="input-group">
+                        <label for="teacherNotes">Teacher's Notes</label>
+                        <textarea id="teacherNotes" placeholder="Enter comments about this student's performance..."></textarea>
+                    </div>
+                    <button onclick="saveGrade()"><i class="fas fa-save"></i> Save Grade & Notes</button>
+                </div>
+            </div>
+
+            <!-- Confirmation Modal -->
+            <div id="confirmModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal('confirmModal')">&times;</span>
+                    <h3 id="confirmTitle"><i class="fas fa-exclamation-triangle"></i> Confirmation</h3>
+                    <p id="confirmMessage">Are you sure you want to perform this action?</p>
+                    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                        <button onclick="closeModal('confirmModal')" class="secondary"><i class="fas fa-times"></i> Cancel</button>
+                        <button onclick="confirmAction()" class="danger"><i class="fas fa-check"></i> Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; <span id="year"></span> <i class="fas fa-graduation-cap"></i> EduTrack Pro - Student Management. All rights reserved.</p>
+        <p>Version 2.1.0</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        // Combined JavaScript Logic
+        let students = JSON.parse(localStorage.getItem('students')) || [];
+        let attendance = JSON.parse(localStorage.getItem('attendance')) || [];
+        let activityLog = JSON.parse(localStorage.getItem('activityLog')) || [];
+        let currentSubject = null;
+        let currentStudentIndex = null;
+        let pendingAction = null;
+        let calcHistory = [];
+        let currentUser = null;
+
+        const subjectsByClass = {
+            Science: ["Mathematics", "Physics", "Chemistry", "Biology", "Further Mathematics", "Agricultural Science", "ICT", "Technical Drawing", "Physical Education", "Economics", "Civic Education", "English Language"],
+            Art: ["Fine Arts", "Visual Arts", "Music", "Literature in English", "History", "Government", "Religious Studies", "Drama", "Textiles", "Graphic Design", "Ceramics", "Photography", "Cultural and Creative Arts", "English Language", "Mathematics", "Civic Education", "Fashion Designing", "Textile Trade", "Leatherwork", "Painting and Decorating", "Sculpture"],
+            Accounting: ["Introduction to Accounting", "Principles of Double Entry", "Preparation of Financial Statements", "Bank Reconciliation", "Trial Balance", "Control Accounts", "Depreciation of Assets", "Partnership Accounts", "Company Accounts", "Cash Book and Petty Cash Book", "Budgeting and Budgetary Control", "Cost Accounting", "Public Sector Accounting", "Ethics in Accounting", "Interpretation of Financial Statements"]
+        };
+
+        const gradeScale = {
+            'A': { min: 90, max: 100, points: 4.0 },
+            'B': { min: 80, max: 89, points: 3.0 },
+            'C': { min: 70, max: 79, points: 2.0 },
+            'D': { min: 60, max: 69, points: 1.0 },
+            'E': { min: 50, max: 59, points: 0.5 },
+            'F': { min: 0, max: 49, points: 0.0 }
+        };
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set theme
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('themeToggle').innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+            }
+            
+            // Set current year in footer
+            document.getElementById('year').textContent = new Date().getFullYear();
+            
+            // Check for hash-based navigation
+            if (window.location.hash) {
+                const tabId = window.location.hash.substring(1);
+                const tab = document.getElementById(tabId);
+                if (tab) {
+                    showTab(tabId);
+                }
+            }
+            
+            // Check for saved user session
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                document.getElementById('authContainer').style.display = 'none';
+                document.getElementById('appContainer').style.display = 'block';
+                updateDashboard();
+                viewAllStudents();
+            }
+        });
+
+        // =============================
+        // GENERAL FUNCTIONS OF THE APP
+        // =============================
+
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            // Refresh content when switching tabs
+            switch(tabId) {
+                case 'dashboard':
+                    updateDashboard();
+                    break;
+                case 'analytics':
+                    updatePerformanceChart();
+                    break;
+                case 'view':
+                    viewAllStudents();
+                    break;
+                case 'calculator':
+                    initCalculator();
+                    break;
+                case 'attendance':
+                    // Set default date to today
+                    const today = new Date().toISOString().split('T')[0];
+                    document.getElementById('attendanceDate').value = today;
+                    loadAttendance();
+                    break;
+            }
+            
+            // Update URL hash for bookmarking
+            window.location.hash = tabId;
+        } 
+
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            
+            const themeToggle = document.getElementById('themeToggle');
+            themeToggle.innerHTML = isDark 
+                ? '<i class="fas fa-sun"></i> Light Mode' 
+                : '<i class="fas fa-moon"></i> Dark Mode';
+        }
+
+        function showNotification(message, type = 'success', duration = 3000) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `<i class="fas fa-${getIconForType(type)}"></i> ${message}`;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), duration);
+        }
+
+        function getIconForType(type) {
+            switch(type) {
+                case 'success': return 'check-circle';
+                case 'error': return 'times-circle';
+                case 'warning': return 'exclamation-triangle';
+                case 'info': return 'info-circle';
+                default: return 'info-circle';
+            }
+        }
+
+        function logActivity(action, details = '') {
+            const timestamp = new Date().toISOString();
+            activityLog.unshift({ 
+                timestamp, 
+                action, 
+                details,
+                user: currentUser ? currentUser.email : 'Anonymous'
+            });
+            
+            // Keep only the last 50 activities
+            if (activityLog.length > 50) {
+                activityLog = activityLog.slice(0, 50);
+            }
+            
+            localStorage.setItem('activityLog', JSON.stringify(activityLog));
+            updateActivityLog();
+        }
+
+        function updateActivityLog() {
+            const logContainer = document.getElementById('activityLog');
+            if (!logContainer) return;
+            
+            logContainer.innerHTML = activityLog.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-time">${formatDateTime(activity.timestamp)}</div>
+                    <div class="activity-action">${activity.action}</div>
+                    ${activity.details ? `<div class="activity-details">${activity.details}</div>` : ''}
+                    ${activity.user ? `<div class="activity-user">By: ${activity.user}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function formatDateTime(timestamp) {
+            return moment(timestamp).format('MMM D, YYYY h:mm A');
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function showConfirmation(title, message, action) {
+            document.getElementById('confirmTitle').innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${title}`;
+            document.getElementById('confirmMessage').textContent = message;
+            pendingAction = action;
+            openModal('confirmModal');
+        }
+
+        function confirmAction() {
+            if (pendingAction && typeof pendingAction === 'function') {
+                pendingAction();
+            }
+            closeModal('confirmModal');
+            pendingAction = null;
+        }
+
+        function toggleHelpSection(header) {
+            header.classList.toggle('collapsed');
+            const content = header.nextElementSibling;
+            content.style.display = content.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function searchHelp() {
+            const searchTerm = document.getElementById('helpSearch').value.toLowerCase();
+            if (!searchTerm) return;
+            
+            const sections = document.querySelectorAll('.help-section-content');
+            sections.forEach(section => {
+                section.style.display = 'block';
+                section.parentElement.querySelector('.help-section-title').classList.remove('collapsed');
+                
+                const topics = section.querySelectorAll('.help-topic');
+                let hasMatches = false;
+                
+                topics.forEach(topic => {
+                    const text = topic.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        topic.style.display = 'block';
+                        hasMatches = true;
+                    } else {
+                        topic.style.display = 'none';
+                    }
+                });
+                
+                if (!hasMatches) {
+                    section.style.display = 'none';
+                    section.parentElement.querySelector('.help-section-title').classList.add('collapsed');
+                }
+            });
+        }
+
+        // ======================
+        // DASHBOARD FUNCTIONS
+        // ======================
+
+        function updateDashboard() {
+            // Update stats
+            document.getElementById('totalStudents').textContent = students.length;
+            
+            // Calculate attendance rate for today
+            const today = new Date().toISOString().split('T')[0];
+            const todayAttendance = attendance.filter(a => a.date === today);
+            const presentCount = todayAttendance.filter(a => a.present).length;
+            const attendanceRate = students.length > 0 ? Math.round((presentCount / students.length) * 100) : 0;
+            document.getElementById('attendanceRate').textContent = `${attendanceRate}%`;
+            
+            // Calculate average GPA
+            let totalGPA = 0;
+            let studentCountWithGrades = 0;
+            
+            students.forEach(student => {
+                const gpa = calculateStudentGPA(student);
+                if (gpa !== null) {
+                    totalGPA += gpa;
+                    studentCountWithGrades++;
+                }
+            });
+            
+            const avgGPA = studentCountWithGrades > 0 ? (totalGPA / studentCountWithGrades).toFixed(2) : 0;
+            document.getElementById('averageGpa').textContent = avgGPA;
+            
+            // Find top program
+            const programCounts = {};
+            students.forEach(student => {
+                programCounts[student.className] = (programCounts[student.className] || 0) + 1;
+            });
+            
+            let topProgram = '-';
+            let maxCount = 0;
+            for (const [program, count] of Object.entries(programCounts)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    topProgram = program;
+                }
+            }
+            
+            document.getElementById('topProgram').textContent = topProgram;
+            document.getElementById('programStats').textContent = `${maxCount} students`;
+            
+            // Update dashboard chart
+            updateDashboardChart();
+            
+            // Update activity log
+            updateActivityLog();
+        }
+
+        function updateDashboardChart() {
+            const ctx = document.getElementById('dashboardChart').getContext('2d');
+            
+            // Destroy previous chart instance if it exists
+            if (ctx.chart) {
+                ctx.chart.destroy();
+            }
+
+            if (students.length === 0) {
+                ctx.canvas.style.display = 'none';
+                return;
+            }
+
+            ctx.canvas.style.display = 'block';
+            
+            // Group students by program
+            const programs = {};
+            students.forEach(student => {
+                if (!programs[student.className]) {
+                    programs[student.className] = 0;
+                }
+                programs[student.className]++;
+            });
+            
+            // Prepare chart data
+            const chartData = {
+                labels: Object.keys(programs),
+                datasets: [{
+                    label: 'Students by Program',
+                    data: Object.values(programs),
+                    backgroundColor: [
+                        'rgba(74, 144, 226, 0.7)',
+                        'rgba(220, 53, 69, 0.7)',
+                        'rgba(40, 167, 69, 0.7)',
+                        'rgba(255, 193, 7, 0.7)',
+                        'rgba(23, 162, 184, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(74, 144, 226, 1)',
+                        'rgba(220, 53, 69, 1)',
+                        'rgba(40, 167, 69, 1)',
+                        'rgba(255, 193, 7, 1)',
+                        'rgba(23, 162, 184, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+
+            ctx.chart = new Chart(ctx, {
+                type: 'bar',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ======================
+        // STUDENT MANAGEMENT
+        // ======================
+
+        function populateSubjects() {
+            const classSelection = document.getElementById("class").value;
+            const subjectsContainer = document.getElementById("subjectsContainer");
+            subjectsContainer.innerHTML = "";
+
+            if (classSelection && subjectsByClass[classSelection]) {
+                subjectsByClass[classSelection].forEach(subject => {
+                    const subjectCard = document.createElement("div");
+                    subjectCard.className = "subject-card";
+                    subjectCard.innerHTML = `
+                        <div style="display: flex; align-items: center;">
+                            <input type="checkbox" id="${subject}">
+                            <label for="${subject}" style="margin-left: 8px;">${subject}</label>
+                        </div>
+                        <button class="grade-btn" onclick="openGradeModal('${subject}')">
+                            <i class="fas fa-edit"></i> Add Grade
+                        </button>
+                    `;
+                    subjectsContainer.appendChild(subjectCard);
+                });
+            }
+        }
+
+        function openGradeModal(subject) {
+            currentSubject = subject;
+            document.getElementById("modalSubjectName").textContent = subject;
+            document.getElementById("gradeInput").value = "";
+            document.getElementById("scoreInput").value = "";
+            document.getElementById("teacherNotes").value = "";
+            openModal('gradeModal');
+        }
+
+        function saveGrade() {
+            const grade = document.getElementById("gradeInput").value.toUpperCase();
+            const score = document.getElementById("scoreInput").value;
+            const notes = document.getElementById("teacherNotes").value.trim();
+            const validGrades = ['A', 'B', 'C', 'D', 'E', 'F'];
+            
+            if (!grade) {
+                showNotification("Please select a grade!", "error");
+                return;
+            }
+            
+            if (score && (score < 0 || score > 100)) {
+                showNotification("Score must be between 0-100!", "error");
+                return;
+            }
+            
+            const subjectCard = document.querySelector(`#subjectsContainer input[id="${currentSubject}"]`).parentElement.parentElement;
+            subjectCard.classList.add("graded");
+            
+            // Store grade, score, and notes in the button's data attributes
+            const gradeBtn = subjectCard.querySelector(".grade-btn");
+            gradeBtn.innerHTML = `<i class="fas fa-check"></i> Grade: ${grade}`;
+            gradeBtn.dataset.grade = grade;
+            gradeBtn.dataset.score = score || '';
+            gradeBtn.dataset.notes = notes;
+            
+            // Add a small notes indicator if notes exist
+            if (notes) {
+                let notesIndicator = subjectCard.querySelector('.grade-notes');
+                if (!notesIndicator) {
+                    notesIndicator = document.createElement('div');
+                    notesIndicator.className = 'grade-notes';
+                    subjectCard.appendChild(notesIndicator);
+                }
+                notesIndicator.textContent = notes.length > 50 ? notes.substring(0, 47) + '...' : notes;
+                notesIndicator.title = notes; // Show full text on hover
+            }
+            
+            closeModal('gradeModal');
+        }
+
+        function addStudent() {
+            const name = document.getElementById('name').value.trim();
+            const age = document.getElementById('age').value;
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const className = document.getElementById('class').value;
+            const photoFile = document.getElementById('photo').files[0];
+            const subjects = {};
+
+            document.querySelectorAll('.subject-card').forEach(card => {
+                const checkbox = card.querySelector('input[type="checkbox"]');
+                if (checkbox.checked) {
+                    const subject = checkbox.id;
+                    const gradeBtn = card.querySelector('.grade-btn');
+                    const grade = gradeBtn.dataset.grade || '';
+                    const score = gradeBtn.dataset.score || '';
+                    const notes = gradeBtn.dataset.notes || '';
+                    subjects[subject] = { grade, score, notes };
+                }
+            });
+
+            if (!name) {
+                showNotification('Please enter a valid name!', "error");
+                return;
+            }
+
+            if (!age || age < 5 || age > 30) {
+                showNotification('Please enter a valid age between 5 and 30!', "error");
+                return;
+            }
+
+            if (email && !validateEmail(email)) {
+                showNotification('Please enter a valid email address!', "error");
+                return;
+            }
+
+            if (!className) {
+                showNotification('Please select a program!', "error");
+                return;
+            }
+
+            if (Object.keys(subjects).length === 0) {
+                showNotification('Please select at least one subject!', "error");
+                return;
+            }
+
+            // Show loading state
+            const saveBtn = document.getElementById('saveStudentBtn');
+            const originalBtnText = saveBtn.innerHTML;
+            saveBtn.innerHTML = '<span class="spinner"></span> Saving...';
+            saveBtn.disabled = true;
+
+            // Handle photo upload
+            let photoUrl = '';
+            if (photoFile) {
+                photoUrl = URL.createObjectURL(photoFile);
+            }
+
+            const newStudent = { 
+                name, 
+                age, 
+                email, 
+                phone, 
+                className, 
+                subjects,
+                photoUrl,
+                registrationDate: new Date().toISOString(),
+                createdBy: currentUser ? currentUser.email : 'Anonymous'
+            };
+
+            // Simulate async operation
+            setTimeout(() => {
+                students.push(newStudent);
+                localStorage.setItem('students', JSON.stringify(students));
+                
+                logActivity('New student added', `Registered ${name} in ${className} program`);
+                showNotification('Student added successfully!');
+                clearForm();
+                updateDashboard();
+                
+                // Restore button state
+                saveBtn.innerHTML = originalBtnText;
+                saveBtn.disabled = false;
+            }, 800);
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function clearForm() {
+            document.getElementById('name').value = '';
+            document.getElementById('age').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('class').value = '';
+            document.getElementById('photo').value = '';
+            document.getElementById('subjectsContainer').innerHTML = '';
+            
+            // Reset the add button text if it was changed for editing
+            const addButton = document.querySelector('#add button');
+            addButton.innerHTML = '<i class="fas fa-save"></i> Register Student';
+            addButton.onclick = addStudent;
+        }
+
+        function searchStudent() {
+            const name = document.getElementById('searchName').value.toLowerCase().trim();
+            const className = document.getElementById('searchClass').value;
+            const resultDiv = document.getElementById('searchResult');
+            resultDiv.innerHTML = "";
+
+            if (!name && !className) {
+                resultDiv.innerHTML = `<div class="notification warning">Please enter search criteria</div>`;
+                return;
+            }
+
+            const found = students.filter(student => {
+                const nameMatch = name ? student.name.toLowerCase().includes(name) : true;
+                const classMatch = className ? student.className === className : true;
+                return nameMatch && classMatch;
+            });
+
+            if (found.length > 0) {
+                resultDiv.innerHTML = found.map(student => `
+                    <div class="student-card">
+                        ${student.photoUrl ? `<img src="${student.photoUrl}" alt="${student.name}" class="student-photo">` : ''}
+                        <div><strong>Name:</strong> ${student.name}</div>
+                        <div><strong>Age:</strong> ${student.age}</div>
+                        <div><strong>Program:</strong> ${student.className}</div>
+                        ${student.email ? `<div><strong>Email:</strong> ${student.email}</div>` : ''}
+                        ${student.phone ? `<div><strong>Phone:</strong> ${student.phone}</div>` : ''}
+                        <div><strong>Subjects:</strong> 
+                            <ul class="subject-list">
+                                ${Object.entries(student.subjects).map(([sub, data]) => `
+                                    <li>
+                                        ${sub} (${data.grade || 'No grade'})
+                                        ${data.score ? `<span class="grade-score">${data.score}%</span>` : ''}
+                                        ${data.notes ? `<div class="grade-notes">${data.notes}</div>` : ''}
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                        <button onclick="viewStudentDetails('${student.name}')"><i class="fas fa-eye"></i> View Details</button>
+                    </div>
+                `).join('');
+            } else {
+                resultDiv.innerHTML = `<div class="notification info">No students found matching your criteria</div>`;
+            }
+        }
+
+        function advancedSearch() {
+            // Populate subjects dropdown
+            const subjectSelect = document.getElementById('advSubject');
+            subjectSelect.innerHTML = '<option value="">Any Subject</option>';
+            
+            const allSubjects = new Set();
+            students.forEach(student => {
+                Object.keys(student.subjects).forEach(subject => {
+                    allSubjects.add(subject);
+                });
+            });
+            
+            Array.from(allSubjects).sort().forEach(subject => {
+                subjectSelect.appendChild(new Option(subject, subject));
+            });
+            
+            openModal('advancedSearchModal');
+        }
+
+        function performAdvancedSearch() {
+            const name = document.getElementById('advName').value.trim().toLowerCase();
+            const className = document.getElementById('advClass').value;
+            const ageMin = parseInt(document.getElementById('advAgeMin').value) || 5;
+            const ageMax = parseInt(document.getElementById('advAgeMax').value) || 30;
+            const subject = document.getElementById('advSubject').value;
+            const grade = document.getElementById('advGrade').value;
+            
+            const resultDiv = document.getElementById('searchResult');
+            resultDiv.innerHTML = "";
+            
+            const found = students.filter(student => {
+                // Name filter
+                const nameMatch = name ? student.name.toLowerCase().includes(name) : true;
+                
+                // Class filter
+                const classMatch = className ? student.className === className : true;
+                
+                // Age filter
+                const ageMatch = student.age >= ageMin && student.age <= ageMax;
+                
+                // Subject filter
+                let subjectMatch = true;
+                if (subject) {
+                    subjectMatch = student.subjects.hasOwnProperty(subject);
+                    
+                    // If we also have a grade filter, check that too
+                    if (subjectMatch && grade) {
+                        subjectMatch = student.subjects[subject].grade === grade;
+                    }
+                }
+                
+                return nameMatch && classMatch && ageMatch && subjectMatch;
+            });
+            
+            if (found.length > 0) {
+                resultDiv.innerHTML = found.map(student => `
+                    <div class="student-card">
+                        ${student.photoUrl ? `<img src="${student.photoUrl}" alt="${student.name}" class="student-photo">` : ''}
+                        <div><strong>Name:</strong> ${student.name}</div>
+                        <div><strong>Age:</strong> ${student.age}</div>
+                        <div><strong>Program:</strong> ${student.className}</div>
+                        <div><strong>Subjects:</strong> 
+                            <ul class="subject-list">
+                                ${Object.entries(student.subjects).map(([sub, data]) => `
+                                    <li>
+                                        ${sub} (${data.grade || 'No grade'})
+                                        ${data.score ? `<span class="grade-score">${data.score}%</span>` : ''}
+                                        ${data.notes ? `<div class="grade-notes">${data.notes}</div>` : ''}
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                        <button onclick="viewStudentDetails('${student.name}')"><i class="fas fa-eye"></i> View Details</button>
+                    </div>
+                `).join('');
+            } else {
+                resultDiv.innerHTML = `<div class="notification info">No students found matching your criteria</div>`;
+            }
+            
+            closeModal('advancedSearchModal');
+        }
+
+        function viewStudentDetails(studentName) {
+            const student = students.find(s => s.name === studentName);
+            if (!student) return;
+            
+            const modalContent = document.getElementById('studentModalContent');
+            modalContent.innerHTML = `
+                <h3>${student.name} <small>(${student.className})</small></h3>
+                ${student.photoUrl ? `<img src="${student.photoUrl}" alt="${student.name}" style="max-width: 200px; border-radius: 5px; margin-bottom: 15px;">` : ''}
+                
+                <div class="student-info">
+                    <div><strong>Age:</strong> ${student.age}</div>
+                    ${student.email ? `<div><strong>Email:</strong> ${student.email}</div>` : ''}
+                    ${student.phone ? `<div><strong>Phone:</strong> ${student.phone}</div>` : ''}
+                    <div><strong>Registered:</strong> ${formatDateTime(student.registrationDate)}</div>
+                    ${student.createdBy ? `<div><strong>Created By:</strong> ${student.createdBy}</div>` : ''}
+                </div>
+                
+                <h4 style="margin-top: 20px;"><i class="fas fa-book"></i> Subjects</h4>
+                <div class="subject-performance">
+                    ${Object.entries(student.subjects).map(([sub, data]) => `
+                        <div class="subject-grade">
+                            <div><strong>${sub}:</strong> ${data.grade || 'No grade'} ${data.score ? `(${data.score}%)` : ''}</div>
+                            ${data.notes ? `<div class="grade-notes">${data.notes}</div>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <h4 style="margin-top: 20px;"><i class="fas fa-calendar-check"></i> Attendance</h4>
+                <div id="studentAttendanceChart" style="height: 200px; margin-bottom: 20px;"></div>
+                
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button onclick="editStudentByName('${student.name}')"><i class="fas fa-edit"></i> Edit</button>
+                    <button onclick="deleteStudentByName('${student.name}')" class="danger"><i class="fas fa-trash"></i> Delete</button>
+                    <button onclick="printStudentReport('${student.name}')" class="secondary"><i class="fas fa-print"></i> Print Report</button>
+                </div>
+            `;
+            
+            // Load attendance chart for this student
+            loadStudentAttendanceChart(student.name);
+            
+            openModal('studentModal');
+        }
+
+        function loadStudentAttendanceChart(studentName) {
+            const studentAttendance = attendance.filter(a => a.name === studentName);
+            const presentCount = studentAttendance.filter(a => a.present).length;
+            const absentCount = studentAttendance.filter(a => !a.present).length;
+            
+            const ctx = document.createElement('canvas');
+            ctx.height = 200;
+            document.getElementById('studentAttendanceChart').innerHTML = '';
+            document.getElementById('studentAttendanceChart').appendChild(ctx);
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Present', 'Absent'],
+                    datasets: [{
+                        data: [presentCount, absentCount],
+                        backgroundColor: [
+                            'rgba(40, 167, 69, 0.7)',
+                            'rgba(220, 53, 69, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(40, 167, 69, 1)',
+                            'rgba(220, 53, 69, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        }
+                    }
+                }
+            });
+        }
+
+        function editStudentByName(studentName) {
+            const index = students.findIndex(s => s.name === studentName);
+            if (index !== -1) {
+                editStudent(index);
+                closeModal('studentModal');
+            }
+        }
+
+        function deleteStudentByName(studentName) {
+            const index = students.findIndex(s => s.name === studentName);
+            if (index !== -1) {
+                showConfirmation(
+                    "Delete Student", 
+                    `Are you sure you want to delete ${studentName}? This action cannot be undone.`, 
+                    () => {
+                        students.splice(index, 1);
+                        localStorage.setItem('students', JSON.stringify(students));
+                        showNotification('Student deleted successfully!');
+                        closeModal('studentModal');
+                        viewAllStudents();
+                        updateDashboard();
+                        logActivity('Student deleted', `Removed ${studentName} from records`);
+                    }
+                );
+            }
+        }
+
+        function printStudentReport(studentName) {
+            // This would be implemented with a print-specific stylesheet
+            // and potentially generating a PDF or printable HTML page
+            showNotification('Print feature coming soon!', 'info');
+        }
+
+        function viewAllStudents() {
+            const allStudentsDiv = document.getElementById('allStudents');
+            if (students.length === 0) {
+                allStudentsDiv.innerHTML = `<div class="notification info">No students registered yet</div>`;
+                return;
+            }
+
+            allStudentsDiv.innerHTML = students.map((student, index) => `
+                <div class="student-card">
+                    ${student.photoUrl ? `<img src="${student.photoUrl}" alt="${student.name}" class="student-photo">` : ''}
+                    <div><strong>Name:</strong> ${student.name}</div>
+                    <div><strong>Age:</strong> ${student.age}</div>
+                    <div><strong>Program:</strong> ${student.className}</div>
+                    <div><strong>Subjects:</strong> ${Object.keys(student.subjects).length}</div>
+                    <div><strong>Registered:</strong> ${formatDateTime(student.registrationDate)}</div>
+                    <div style="display: flex; gap: 8px; margin-top: 10px;">
+                        <button onclick="viewStudentDetails('${student.name}')"><i class="fas fa-eye"></i> View</button>
+                        <button onclick="editStudent(${index})"><i class="fas fa-edit"></i> Edit</button>
+                        <button onclick="showConfirmation('Delete Student', 'Are you sure you want to delete ${student.name}?', function() { deleteStudent(${index}) })" class="danger"><i class="fas fa-trash"></i> Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterByGroup() {
+            const group = document.getElementById('groupFilter').value;
+            const allStudentsDiv = document.getElementById('allStudents');
+            
+            if (!group) {
+                viewAllStudents();
+                return;
+            }
+
+            const filtered = students.filter(student => student.className === group);
+            
+            if (filtered.length === 0) {
+                allStudentsDiv.innerHTML = `<div class="notification info">No students in ${group} program</div>`;
+                return;
+            }
+
+            allStudentsDiv.innerHTML = filtered.map((student, index) => `
+                <div class="student-card">
+                    ${student.photoUrl ? `<img src="${student.photoUrl}" alt="${student.name}" class="student-photo">` : ''}
+                    <div><strong>Name:</strong> ${student.name}</div>
+                    <div><strong>Age:</strong> ${student.age}</div>
+                    <div><strong>Program:</strong> ${student.className}</div>
+                    <div><strong>Subjects:</strong> ${Object.keys(student.subjects).length}</div>
+                    <div><strong>Registered:</strong> ${formatDateTime(student.registrationDate)}</div>
+                    <div style="display: flex; gap: 8px; margin-top: 10px;">
+                        <button onclick="viewStudentDetails('${student.name}')"><i class="fas fa-eye"></i> View</button>
+                        <button onclick="editStudent(${index})"><i class="fas fa-edit"></i> Edit</button>
+                        <button onclick="showConfirmation('Delete Student', 'Are you sure you want to delete ${student.name}?', function() { deleteStudent(${index}) })" class="danger"><i class="fas fa-trash"></i> Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function sortStudents() {
+            const sortBy = document.getElementById('sortBy').value;
+            const [field, direction] = sortBy.split('-');
+            
+            students.sort((a, b) => {
+                let comparison = 0;
+                
+                if (field === 'name') {
+                    comparison = a.name.localeCompare(b.name);
+                } else if (field === 'age') {
+                    comparison = a.age - b.age;
+                } else if (field === 'class') {
+                    comparison = a.className.localeCompare(b.className);
+                }
+                
+                return direction === 'desc' ? -comparison : comparison;
+            });
+            
+            viewAllStudents();
+        }
+
+        function editStudent(index) {
+            const student = students[index];
+            currentStudentIndex = index;
+            
+            document.getElementById('name').value = student.name;
+            document.getElementById('age').value = student.age;
+            document.getElementById('email').value = student.email || '';
+            document.getElementById('phone').value = student.phone || '';
+            document.getElementById('class').value = student.className;
+            populateSubjects();
+
+            // Need to wait for subjects to populate before setting values
+            setTimeout(() => {
+                const subjectsContainer = document.getElementById('subjectsContainer');
+                subjectsContainer.querySelectorAll('.subject-card').forEach(card => {
+                    const subject = card.querySelector('input').id;
+                    if (student.subjects[subject]) {
+                        card.querySelector('input').checked = true;
+                        const gradeBtn = card.querySelector('.grade-btn');
+                        gradeBtn.innerHTML = `<i class="fas fa-check"></i> Grade: ${student.subjects[subject].grade || ''}`;
+                        gradeBtn.dataset.grade = student.subjects[subject].grade || '';
+                        gradeBtn.dataset.score = student.subjects[subject].score || '';
+                        gradeBtn.dataset.notes = student.subjects[subject].notes || '';
+                        card.classList.add("graded");
+                        
+                        // Add notes indicator if exists
+                        if (student.subjects[subject].notes) {
+                            let notesIndicator = card.querySelector('.grade-notes');
+                            if (!notesIndicator) {
+                                notesIndicator = document.createElement('div');
+                                notesIndicator.className = 'grade-notes';
+                                card.appendChild(notesIndicator);
+                            }
+                            notesIndicator.textContent = student.subjects[subject].notes.length > 50 ? 
+                                student.subjects[subject].notes.substring(0, 47) + '...' : 
+                                student.subjects[subject].notes;
+                            notesIndicator.title = student.subjects[subject].notes;
+                        }
+                    }
+                });
+                
+                // Update the add button to save changes
+                const addButton = document.querySelector('#add button');
+                addButton.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+                addButton.onclick = () => saveStudentChanges(currentStudentIndex);
+                
+                // Show the add tab
+                showTab('add');
+            }, 100);
+        }
+
+        function saveStudentChanges(index) {
+            const name = document.getElementById('name').value.trim();
+            const age = document.getElementById('age').value;
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const className = document.getElementById('class').value;
+            const photoFile = document.getElementById('photo').files[0];
+            const subjects = {};
+
+            document.querySelectorAll('.subject-card').forEach(card => {
+                const checkbox = card.querySelector('input[type="checkbox"]');
+                if (checkbox.checked) {
+                    const subject = checkbox.id;
+                    const gradeBtn = card.querySelector('.grade-btn');
+                    const grade = gradeBtn.dataset.grade || '';
+                    const score = gradeBtn.dataset.score || '';
+                    const notes = gradeBtn.dataset.notes || '';
+                    subjects[subject] = { grade, score, notes };
+                }
+            });
+
+            if (!name || !age || !className || Object.keys(subjects).length === 0) {
+                showNotification('Please fill in all required fields and select at least one subject.', "error");
+                return;
+            }
+
+            if (email && !validateEmail(email)) {
+                showNotification('Please enter a valid email address!', "error");
+                return;
+            }
+
+            // Handle photo update
+            let photoUrl = students[index].photoUrl || '';
+            if (photoFile) {
+                // Revoke old URL if exists
+                if (photoUrl) {
+                    URL.revokeObjectURL(photoUrl);
+                }
+                photoUrl = URL.createObjectURL(photoFile);
+            }
+
+            students[index] = { 
+                ...students[index],
+                name, 
+                age, 
+                email, 
+                phone, 
+                className, 
+                subjects,
+                photoUrl
+            };
+            
+            localStorage.setItem('students', JSON.stringify(students));
+            showNotification('Student updated successfully!');
+            clearForm();
+            viewAllStudents();
+            updateDashboard();
+            
+            logActivity('Student updated', `Modified details for ${name}`);
+            
+            // Reset the add button
+            const addButton = document.querySelector('#add button');
+            addButton.innerHTML = '<i class="fas fa-save"></i> Register Student';
+            addButton.onclick = addStudent;
+        }
+
+        function deleteStudent(index) {
+            const studentName = students[index].name;
+            students.splice(index, 1);
+            localStorage.setItem('students', JSON.stringify(students));
+            showNotification('Student deleted successfully!');
+            viewAllStudents();
+            updateDashboard();
+            logActivity('Student deleted', `Removed ${studentName} from records`);
+        }
+
+        function calculateStudentGPA(student) {
+            let totalPoints = 0;
+            let totalSubjects = 0;
+            
+            for (const [subject, data] of Object.entries(student.subjects)) {
+                if (data.grade && gradeScale[data.grade]) {
+                    totalPoints += gradeScale[data.grade].points;
+                    totalSubjects++;
+                }
+            }
+            
+            return totalSubjects > 0 ? totalPoints / totalSubjects : null;
+        }
+
+        function loadSubjectsForAdvancedSearch() {
+            const subjectSelect = document.getElementById('advSubject');
+            subjectSelect.innerHTML = '<option value="">Any Subject</option>';
+            
+            const allSubjects = new Set();
+            students.forEach(student => {
+                Object.keys(student.subjects).forEach(subject => {
+                    allSubjects.add(subject);
+                });
+            });
+            
+            Array.from(allSubjects).sort().forEach(subject => {
+                subjectSelect.appendChild(new Option(subject, subject));
+            });
+        }
+
+        // ======================
+        // ATTENDANCE MANAGEMENT
+        // ======================
+
+        function loadAttendance() {
+            const date = document.getElementById('attendanceDate').value;
+            const className = document.getElementById('attendanceClass').value;
+            
+            if (!date) {
+                showNotification('Please select a date first!', "error");
+                return;
+            }
+
+            const filteredAttendance = attendance.filter(record => 
+                record.date === date && 
+                (className ? record.className === className : true)
+            );
+            
+            const attendanceList = document.getElementById('attendanceList');
+            const filteredStudents = className ? 
+                students.filter(s => s.className === className) : 
+                students;
+            
+            if (filteredStudents.length === 0) {
+                attendanceList.innerHTML = '<div class="notification info">No students found</div>';
+                document.getElementById('attendancePercentage').textContent = '0%';
+                document.getElementById('attendanceCounts').textContent = 'Present: 0 / Absent: 0 / Total: 0';
+                return;
+            }
+
+            let presentCount = 0;
+            
+            attendanceList.innerHTML = filteredStudents.map(student => {
+                const attendanceRecord = filteredAttendance.find(record => record.name === student.name);
+                const isPresent = attendanceRecord ? attendanceRecord.present : false;
+                
+                if (isPresent) presentCount++;
+                
+                return `
+                    <div class="attendance-card">
+                        <label>${student.name} <small>(${student.className})</small></label>
+                        <label class="switch">
+                            <input type="checkbox" id="${student.name}-${date}" ${isPresent ? 'checked' : ''}>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                `;
+            }).join('');
+            
+            const attendancePercentage = Math.round((presentCount / filteredStudents.length) * 100);
+            document.getElementById('attendancePercentage').textContent = `${attendancePercentage}%`;
+            document.getElementById('attendanceCounts').textContent = 
+                `Present: ${presentCount} / Absent: ${filteredStudents.length - presentCount} / Total: ${filteredStudents.length}`;
+        }
+
+        function saveAttendance() {
+            const date = document.getElementById('attendanceDate').value;
+            const className = document.getElementById('attendanceClass').value;
+            
+            if (!date) {
+                showNotification('Please select a date first!', "error");
+                return;
+            }
+
+            const filteredStudents = className ? 
+                students.filter(s => s.className === className) : 
+                students;
+            
+            // Show loading state
+            const saveBtn = document.getElementById('saveAttendanceBtn');
+            const originalBtnText = saveBtn.innerHTML;
+            saveBtn.innerHTML = '<span class="spinner"></span> Saving...';
+            saveBtn.disabled = true;
+
+            const records = filteredStudents.map(student => ({
+                name: student.name,
+                className: student.className,
+                date,
+                present: document.getElementById(`${student.name}-${date}`)?.checked || false,
+                recordedBy: currentUser ? currentUser.email : 'Anonymous'
+            }));
+
+            // Remove existing records for this date and class (if filtered)
+            attendance = attendance.filter(record => 
+                !(record.date === date && 
+                (className ? record.className === className : true))
+            ).concat(records);
+            
+            // Simulate async operation
+            setTimeout(() => {
+                localStorage.setItem('attendance', JSON.stringify(attendance));
+                showNotification('Attendance saved successfully!');
+                logActivity('Attendance recorded', `Saved attendance for ${date}${className ? ` (${className})` : ''}`);
+                
+                // Restore button state
+                saveBtn.innerHTML = originalBtnText;
+                saveBtn.disabled = false;
+            }, 800);
+        }
+
+        function printAttendance() {
+            const date = document.getElementById('attendanceDate').value;
+            if (!date) {
+                showNotification('Please select a date first!', "error");
+                return;
+            }
+            
+            // This would open a print-friendly version of the attendance
+            showNotification('Print feature coming soon!', 'info');
+        }
+
+        function clearAttendance() {
+            showConfirmation(
+                "Clear Attendance", 
+                "Are you sure you want to clear all attendance records? This action cannot be undone.", 
+                () => {
+                    attendance = [];
+                    localStorage.setItem('attendance', JSON.stringify(attendance));
+                    showNotification('Attendance records cleared!');
+                    loadAttendance();
+                    logActivity('Attendance cleared', 'All attendance records removed');
+                }
+            );
+        }
+
+        // ======================
+        // ANALYTICS FUNCTIONS
+        // ======================
+
+        function updatePerformanceChart() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            const className = document.getElementById('analyticsClass').value;
+            const subjectName = document.getElementById('analyticsSubject').value;
+            
+            // Destroy previous chart instance if it exists
+            if (ctx.chart) {
+                ctx.chart.destroy();
+            }
+
+            // Filter students by class if specified
+            const filteredStudents = className ? 
+                students.filter(student => student.className === className) : 
+                students;
+            
+            if (filteredStudents.length === 0) {
+                ctx.canvas.style.display = 'none';
+                document.getElementById('topStudent').textContent = '-';
+                document.getElementById('topStudentGpa').textContent = 'GPA: 0.0';
+                document.getElementById('mostImproved').textContent = '-';
+                document.getElementById('improvementRate').textContent = '+0%';
+                document.getElementById('bestSubject').textContent = '-';
+                document.getElementById('subjectAvg').textContent = 'Avg: 0.0';
+                document.getElementById('bestProgram').textContent = '-';
+                document.getElementById('programAvg').textContent = 'Avg: 0.0';
+                return;
+            }
+
+            ctx.canvas.style.display = 'block';
+            
+            // Update subjects dropdown based on selected class
+            const subjectSelect = document.getElementById('analyticsSubject');
+            subjectSelect.innerHTML = '<option value="">All Subjects</option>';
+            
+            const subjectsInClass = new Set();
+            filteredStudents.forEach(student => {
+                Object.keys(student.subjects).forEach(subject => {
+                    subjectsInClass.add(subject);
+                });
+            });
+            
+            Array.from(subjectsInClass).sort().forEach(subject => {
+                subjectSelect.appendChild(new Option(subject, subject));
+            });
+            
+            // If a subject is selected, filter to only students who have that subject
+            const studentsWithSubject = subjectName ? 
+                filteredStudents.filter(student => student.subjects[subjectName]) : 
+                filteredStudents;
+            
+            // Convert letter grades to numerical values for chart
+            const gradeValues = { 'A': 5, 'B': 4, 'C': 3, 'D': 2, 'E': 1, 'F': 0 };
+            
+            // Prepare chart data
+            const chartData = {
+                labels: studentsWithSubject.map(student => student.name),
+                datasets: []
+            };
+            
+            if (subjectName) {
+                // Single subject view
+                chartData.datasets.push({
+                    label: `${subjectName} Grade`,
+                    data: studentsWithSubject.map(student => {
+                        const grade = student.subjects[subjectName]?.grade;
+                        return grade ? gradeValues[grade] : null;
+                    }),
+                    backgroundColor: 'rgba(74, 144, 226, 0.7)',
+                    borderColor: 'rgba(74, 144, 226, 1)',
+                    borderWidth: 1
+                });
+            } else {
+                // Average grade view
+                chartData.datasets.push({
+                    label: 'Average Grade',
+                    data: studentsWithSubject.map(student => {
+                        const grades = Object.values(student.subjects)
+                            .map(data => data.grade ? gradeValues[data.grade] : null)
+                            .filter(grade => grade !== null);
+                        return grades.length > 0 ? 
+                            grades.reduce((a, b) => a + b, 0) / grades.length : 
+                            null;
+                    }),
+                    backgroundColor: 'rgba(74, 144, 226, 0.7)',
+                    borderColor: 'rgba(74, 144, 226, 1)',
+                    borderWidth: 1
+                });
+            }
+            
+            // Find top student
+            let topStudent = '-';
+            let topGPA = 0;
+            
+            // Find most improved student (placeholder - would need historical data)
+            let mostImproved = '-';
+            let improvementRate = '+0%';
+            
+            // Find best subject
+            let bestSubject = '-';
+            let subjectAvg = 0;
+            
+            if (studentsWithSubject.length > 0) {
+                // Calculate subject averages if we're not already viewing a single subject
+                if (!subjectName) {
+                    const subjectAverages = {};
+                    const subjectCounts = {};
+                    
+                    studentsWithSubject.forEach(student => {
+                        Object.entries(student.subjects).forEach(([sub, data]) => {
+                            if (data.grade && gradeValues[data.grade]) {
+                                subjectAverages[sub] = (subjectAverages[sub] || 0) + gradeValues[data.grade];
+                                subjectCounts[sub] = (subjectCounts[sub] || 0) + 1;
+                            }
+                        });
+                    });
+                    
+                    // Find subject with highest average
+                    let maxAvg = 0;
+                    for (const [sub, total] of Object.entries(subjectAverages)) {
+                        const avg = total / subjectCounts[sub];
+                        if (avg > maxAvg) {
+                            maxAvg = avg;
+                            bestSubject = sub;
+                            subjectAvg = avg;
+                        }
+                    }
+                }
+                
+                // Find student with highest GPA
+                studentsWithSubject.forEach(student => {
+                    const gpa = calculateStudentGPA(student);
+                    if (gpa !== null && gpa > topGPA) {
+                        topGPA = gpa;
+                        topStudent = student.name;
+                    }
+                });
+            }
+            
+            // Find best program (if not already filtered by program)
+            let bestProgram = '-';
+            let programAvg = 0;
+            
+            if (!className) {
+                const programAverages = {};
+                const programCounts = {};
+                
+                students.forEach(student => {
+                    const gpa = calculateStudentGPA(student);
+                    if (gpa !== null) {
+                        programAverages[student.className] = (programAverages[student.className] || 0) + gpa;
+                        programCounts[student.className] = (programCounts[student.className] || 0) + 1;
+                    }
+                });
+                
+                // Find program with highest average
+                let maxAvg = 0;
+                for (const [program, total] of Object.entries(programAverages)) {
+                    const avg = total / programCounts[program];
+                    if (avg > maxAvg) {
+                        maxAvg = avg;
+                        bestProgram = program;
+                        programAvg = avg;
+                    }
+                }
+            }
+            
+            // Update stats boxes
+            document.getElementById('topStudent').textContent = topStudent;
+            document.getElementById('topStudentGpa').textContent = `GPA: ${topGPA.toFixed(2)}`;
+            document.getElementById('mostImproved').textContent = mostImproved;
+            document.getElementById('improvementRate').textContent = improvementRate;
+            document.getElementById('bestSubject').textContent = bestSubject;
+            document.getElementById('subjectAvg').textContent = `Avg: ${subjectAvg.toFixed(2)}`;
+            document.getElementById('bestProgram').textContent = bestProgram;
+            document.getElementById('programAvg').textContent = `Avg: ${programAvg.toFixed(2)}`;
+            
+            // Create chart
+            ctx.chart = new Chart(ctx, {
+                type: 'bar',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 5,
+                            ticks: {
+                                callback: function(value) {
+                                    // Convert numerical value back to letter grade
+                                    const gradeMap = {5: 'A', 4: 'B', 3: 'C', 2: 'D', 1: 'E', 0: 'F'};
+                                    return gradeMap[value] || '';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const gradeMap = {5: 'A', 4: 'B', 3: 'C', 2: 'D', 1: 'E', 0: 'F'};
+                                    const value = context.raw;
+                                    return `${context.dataset.label}: ${value !== null ? gradeMap[value] || value : 'No grade'}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ======================
+        // BACKUP FUNCTIONS
+        // ======================
+
+        function backupData() {
+            const data = {
+                students: students,
+                attendance: attendance,
+                activityLog: activityLog,
+                lastBackup: new Date().toISOString(),
+                version: '2.1.0',
+                createdBy: currentUser ? currentUser.email : 'Anonymous'
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `EduTrack_Backup_${new Date().toISOString().slice(0,10)}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            
+            logActivity('Backup created', 'Downloaded system backup');
+            showNotification('Backup created successfully!');
+        }
+
+        function emailBackup() {
+            // This would typically connect to an email service or use the device's email client
+            showNotification('Email backup feature coming soon!', 'info');
+        }
+
+        function handleRestoreFile(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    if (!data.students || !Array.isArray(data.students)) {
+                        throw new Error("Invalid backup format");
+                    }
+                    
+                    showConfirmation(
+                        "Restore Backup", 
+                        `This will overwrite all current data with the backup from ${data.lastBackup ? formatDateTime(data.lastBackup) : 'unknown date'}. Continue?`, 
+                        () => {
+                            students = data.students;
+                            attendance = data.attendance || [];
+                            activityLog = data.activityLog || [];
+                            
+                            localStorage.setItem('students', JSON.stringify(students));
+                            localStorage.setItem('attendance', JSON.stringify(attendance));
+                            localStorage.setItem('activityLog', JSON.stringify(activityLog));
+                            
+                            showNotification('Data restored successfully!');
+                            viewAllStudents();
+                            updateDashboard();
+                            updatePerformanceChart();
+                            
+                            logActivity('System restored', 'Loaded data from backup file');
+                        }
+                    );
+                } catch (error) {
+                    console.error("Restore error:", error);
+                    showNotification('Error: Invalid backup file', "error");
+                }
+            };
+            reader.onerror = function() {
+                showNotification('Error reading file. Please try again.', "error");
+            };
+            reader.readAsText(file);
+        }
+
+        document.getElementById('restoreFile').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                handleRestoreFile(file);
+            }
+        });
+
+        const dropArea = document.getElementById('dropArea');
+        dropArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropArea.classList.add('dragover');
+        });
+        
+        dropArea.addEventListener('dragleave', () => {
+            dropArea.classList.remove('dragover');
+        });
+        
+        dropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropArea.classList.remove('dragover');
+            
+            const file = e.dataTransfer.files[0];
+            if (file && file.type === "application/json") {
+                handleRestoreFile(file);
+            } else {
+                showNotification('Please drop a valid JSON backup file', "error");
+            }
+        });
+
+        function clearAllData() {
+            showConfirmation(
+                "Clear All Data", 
+                "This will permanently delete ALL student records, attendance, and activity logs. Are you absolutely sure?", 
+                () => {
+                    students = [];
+                    attendance = [];
+                    activityLog = [];
+                    
+                    localStorage.setItem('students', JSON.stringify(students));
+                    localStorage.setItem('attendance', JSON.stringify(attendance));
+                    localStorage.setItem('activityLog', JSON.stringify(activityLog));
+                    
+                    showNotification('All data cleared!');
+                    viewAllStudents();
+                    updateDashboard();
+                    updatePerformanceChart();
+                    
+                    logActivity('System reset', 'All data cleared');
+                }
+            );
+        }
+
+        // ======================
+        // CALCULATOR FUNCTIONS
+        // ======================
+
+        let currentInput = '0';
+        let previousInput = '';
+        let operation = null;
+        let resetScreen = false;
+
+        function initCalculator() {
+            currentInput = '0';
+            previousInput = '';
+            operation = null;
+            resetScreen = false;
+            
+            updateDisplay();
+            document.getElementById('gpaSubjects').innerHTML = '';
+            addGpaSubject(); // Add one subject by default
+        }
+
+        function updateDisplay() {
+            const display = document.getElementById('display');
+            display.textContent = currentInput;
+        }
+
+        function appendToDisplay(number) {
+            if (currentInput === '0' || resetScreen) {
+                currentInput = '';
+                resetScreen = false;
+            }
+            
+            // Prevent multiple decimal points
+            if (number === '.' && currentInput.includes('.')) return;
+            
+            currentInput += number;
+            updateDisplay();
+        }
+
+        function appendOperator(op) {
+            if (operation !== null) calculate();
+            previousInput = currentInput;
+            operation = op;
+            resetScreen = true;
+            
+            // Update operator buttons styling
+            document.querySelectorAll('.operator').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        function calculate() {
+            if (operation === null || resetScreen) return;
+            
+            let result;
+            const prev = parseFloat(previousInput);
+            const current = parseFloat(currentInput);
+            
+            if (isNaN(prev)) return;
+            
+            switch (operation) {
+                case '+':
+                    result = prev + current;
+                    break;
+                case '-':
+                    result = prev - current;
+                    break;
+                case '*':
+                    result = prev * current;
+                    break;
+                case '/':
+                    result = prev / current;
+                    break;
+                case '%':
+                    result = prev % current;
+                    break;
+                default:
+                    return;
+            }
+            
+            // Add to history
+            const calculation = `${previousInput} ${operation} ${currentInput} = ${result}`;
+            calcHistory.push(calculation);
+            updateCalcHistory();
+            
+            currentInput = result.toString();
+            operation = null;
+            resetScreen = true;
+            updateDisplay();
+            
+            // Remove active class from operator buttons
+            document.querySelectorAll('.operator').forEach(btn => {
+                btn.classList.remove('active');
+            });
+        }
+
+        function clearAll() {
+            currentInput = '0';
+            previousInput = '';
+            operation = null;
+            updateDisplay();
+        }
+
+        function clearEntry() {
+            currentInput = '0';
+            updateDisplay();
+        }
+
+        function backspace() {
+            if (currentInput.length === 1 || 
+                (currentInput.length === 2 && currentInput.startsWith('-'))) {
+                currentInput = '0';
+            } else {
+                currentInput = currentInput.slice(0, -1);
+            }
+            updateDisplay();
+        }
+
+        function updateCalcHistory() {
+            const historyDiv = document.getElementById('history');
+            historyDiv.innerHTML = calcHistory.map(entry => 
+                `<div class="history-entry">${entry}</div>`
+            ).reverse().join('');
+        }
+
+        function clearHistory() {
+            calcHistory = [];
+            updateCalcHistory();
+        }
+
+        function convertToGrade() {
+            const score = parseFloat(document.getElementById('scoreInput').value);
+            let grade = '';
+            let gpa = 0;
+            
+            if (isNaN(score)) {
+                showNotification('Please enter a valid score!', 'error');
+                return;
+            }
+            
+            if (score < 0 || score > 100) {
+                showNotification('Score must be between 0-100!', 'error');
+                return;
+            }
+            
+            for (const [letter, range] of Object.entries(gradeScale)) {
+                if (score >= range.min && score <= range.max) {
+                    grade = letter;
+                    gpa = range.points;
+                    break;
+                }
+            }
+            
+            document.getElementById('gradeResult').innerHTML = `
+                <p><strong>Score:</strong> ${score.toFixed(1)}%</p>
+                <p><strong>Grade:</strong> ${grade}</p>
+                <p><strong>GPA Points:</strong> ${gpa.toFixed(1)}</p>
+                <p><strong>Performance:</strong> ${getPerformanceDescription(grade)}</p>
+            `;
+        }
+
+        function getPerformanceDescription(grade) {
+            switch(grade) {
+                case 'A': return 'Excellent';
+                case 'B': return 'Good';
+                case 'C': return 'Average';
+                case 'D': return 'Below Average';
+                case 'E': return 'Poor';
+                case 'F': return 'Fail';
+                default: return 'Unknown';
+            }
+        }
+
+        function addGpaSubject() {
+            const container = document.getElementById('gpaSubjects');
+            const subjectId = Date.now(); // Unique ID
+            
+            const subjectDiv = document.createElement('div');
+            subjectDiv.className = 'gpa-subject';
+            subjectDiv.innerHTML = `
+                <div class="input-group">
+                    <input type="text" placeholder="Subject" id="subject-${subjectId}">
+                </div>
+                <div class="input-group">
+                    <select id="grade-${subjectId}">
+                        <option value="4.0">A (4.0)</option>
+                        <option value="3.7">A- (3.7)</option>
+                        <option value="3.3">B+ (3.3)</option>
+                        <option value="3.0">B (3.0)</option>
+                        <option value="2.7">B- (2.7)</option>
+                        <option value="2.3">C+ (2.3)</option>
+                        <option value="2.0">C (2.0)</option>
+                        <option value="1.7">C- (1.7)</option>
+                        <option value="1.3">D+ (1.3)</option>
+                        <option value="1.0">D (1.0)</option>
+                        <option value="0.0">F (0.0)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <input type="number" min="1" max="10" value="1" id="credits-${subjectId}" placeholder="Credits">
+                </div>
+                <button onclick="this.parentElement.remove()" class="remove-subject"><i class="fas fa-times"></i></button>
+            `;
+            
+            container.appendChild(subjectDiv);
+        }
+
+        function calculateGPA() {
+            const subjects = document.querySelectorAll('.gpa-subject');
+            if (subjects.length === 0) {
+                showNotification('Please add at least one subject!', 'error');
+                return;
+            }
+            
+            let totalQualityPoints = 0;
+            let totalCredits = 0;
+            let results = [];
+            
+            subjects.forEach(subject => {
+                const gradeSelect = subject.querySelector('select');
+                const creditsInput = subject.querySelector('input[type="number"]');
+                const subjectInput = subject.querySelector('input[type="text"]');
+                
+                const grade = parseFloat(gradeSelect.value);
+                const credits = parseFloat(creditsInput.value) || 1;
+                const qualityPoints = grade * credits;
+                
+                totalQualityPoints += qualityPoints;
+                totalCredits += credits;
+                
+                results.push({
+                    subject: subjectInput.value || 'Unnamed Subject',
+                    grade: gradeSelect.options[gradeSelect.selectedIndex].text,
+                    credits: credits,
+                    points: qualityPoints.toFixed(2)
+                });
+            });
+            
+            const gpa = totalQualityPoints / totalCredits;
+            
+            let resultHTML = `<p><strong>GPA:</strong> ${gpa.toFixed(2)}</p>`;
+            resultHTML += `<p><strong>Total Credits:</strong> ${totalCredits}</p>`;
+            resultHTML += `<div class="gpa-details"><h4>Details:</h4><ul>`;
+            resultHTML += results.map(sub => `
+                <li>${sub.subject}: ${sub.grade} (${sub.credits} cr) = ${sub.points}</li>
+            `).join('');
+            resultHTML += `</ul></div>`;
+            
+            document.getElementById('gpaResult').innerHTML = resultHTML;
+        }
+
+        // Keyboard support for calculator
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('calculator').style.display !== 'block') return;
+            
+            if (/[0-9]/.test(e.key)) appendToDisplay(e.key);
+            else if (e.key === '.') appendToDisplay('.');
+            else if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') appendOperator(e.key);
+            else if (e.key === 'Enter' || e.key === '=') calculate();
+            else if (e.key === 'Escape') clearAll();
+            else if (e.key === 'Backspace') backspace();
+            else if (e.key === '%') appendToDisplay('%');
+        });
+
+        // ======================
+        // AUTHENTICATION
+        // ======================
+
+        function onSignIn(googleUser) {
+            const profile = googleUser.getBasicProfile();
+            currentUser = {
+                id: profile.getId(),
+                name: profile.getName(),
+                email: profile.getEmail(),
+                imageUrl: profile.getImageUrl()
+            };
+            
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'block';
+            
+            showNotification(`Welcome, ${profile.getName()}!`, 'success');
+            logActivity('User logged in', `Google account: ${profile.getEmail()}`);
+        }
+
+        function signOut() {
+            const auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(() => {
+                console.log('User signed out.');
+                currentUser = null;
+                localStorage.removeItem('currentUser');
+                document.getElementById('authContainer').style.display = 'flex';
+                document.getElementById('appContainer').style.display = 'none';
+                showNotification('You have been signed out.', 'info');
+                logActivity('User logged out', 'Session ended');
+            });
+        }
+    </script>
+</body>
+</html>m
